@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# AWS / Bedrock
+.aws/
+*.pem
+
+# Env vars / secrets
+.env
+.env.local
+
+# JSON data (Shared Understanding Model persistido - no versionar datos de prueba reales)
+/data/*.json
+!/data/.gitkeep
+
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Streamlit
+.streamlit/secrets.toml
