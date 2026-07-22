@@ -84,6 +84,7 @@ def run_clarification_session(
   initial_statement: str,
   get_answer: AnswerProvider,
   extractor: Extractor,
+  llm_client=None,
   max_turns: int = 20,
 ) -> tuple[SharedUnderstandingModel, DecisionLog, list[Turn]]:
   """Runs the full loop until every category is covered or max_turns is hit.
@@ -91,10 +92,15 @@ def run_clarification_session(
   terminal prompt in interactive use, or category-aware canned answers
   in a scripted demo. The category must be passed (not just the question
   text) because Clarification Engine reorders categories dynamically as
-  the model fills up — a flat, fixed-order answer list would desync."""
+  the model fills up — a flat, fixed-order answer list would desync.
+
+  `llm_client` defaults to MockLLMClient (no Bedrock call). Pass a
+  BedrockLLMClient() instance to run against the real model."""
   model = SharedUnderstandingModel()
   decision_log = DecisionLog()
-  conversation = ConversationEngine(MockLLMClient(), system_prompt=SYSTEM_PROMPT)
+  conversation = ConversationEngine(
+    llm_client or MockLLMClient(), system_prompt=SYSTEM_PROMPT
+  )
   conversation.history.append(Turn(role="user", text=initial_statement))
 
   clarifier = ClarificationEngine(model)
