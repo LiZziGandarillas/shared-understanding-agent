@@ -31,13 +31,7 @@ from decision_log import DecisionLog
 from open_questions import render_open_questions_markdown
 from requirements_generator import generate_requirements_md
 
-SYSTEM_PROMPT = (
-  "You are a requirements clarification assistant. Ask exactly ONE "
-  "short, specific question at a time to uncover actors, business "
-  "rules, entities, constraints, dependencies, edge cases, and goals "
-  "for the system the user describes. Never assume an answer the "
-  "user hasn't given."
-)
+from prompts import CLARIFICATION_SYSTEM_PROMPT, TEST_SCENARIO
 
 AnswerProvider = Callable[[str, str], str]
 
@@ -99,7 +93,7 @@ def run_clarification_session(
   model = SharedUnderstandingModel()
   decision_log = DecisionLog()
   conversation = ConversationEngine(
-    llm_client or MockLLMClient(), system_prompt=SYSTEM_PROMPT
+    llm_client or MockLLMClient(), system_prompt=CLARIFICATION_SYSTEM_PROMPT
   )
   conversation.history.append(Turn(role="user", text=initial_statement))
 
@@ -131,11 +125,6 @@ def run_clarification_session(
 
 
 if __name__ == "__main__":
-  TEST_SCENARIO = (
-    "Sistema para gestionar estudiantes: permite registrar estudiantes, "
-    "inscribirlos en cursos, y ver su historial de calificaciones."
-  )
-
   canned_answers: dict[str, list[str]] = {
     "actors": [
       "Administrator, who manages students and courses",
